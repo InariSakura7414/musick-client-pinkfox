@@ -18,6 +18,7 @@ class SupabaseSignUpPage extends StatefulWidget {
 
 class _SupabaseSignUpPageState extends State<SupabaseSignUpPage> {
   final Logger _logger = Logger();
+  final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -26,17 +27,19 @@ class _SupabaseSignUpPageState extends State<SupabaseSignUpPage> {
 
   @override
   void dispose() {
+    _userNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
   Future<void> _signUp() async {
+    final userName = _userNameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text;
 
-    if (email.isEmpty || password.isEmpty) {
-      setState(() => _status = 'Enter email and password.');
+    if (userName.isEmpty || email.isEmpty || password.isEmpty) {
+      setState(() => _status = 'Enter user name, email and password.');
       return;
     }
 
@@ -51,6 +54,9 @@ class _SupabaseSignUpPageState extends State<SupabaseSignUpPage> {
       await supabase.auth.signUp(
         email: email,
         password: password,
+        data: {
+          'user_name': userName,
+        },
       );
 
       if (!mounted) return;
@@ -83,9 +89,20 @@ class _SupabaseSignUpPageState extends State<SupabaseSignUpPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
+              controller: _userNameController,
+              enabled: !_isLoading,
+              textInputAction: TextInputAction.next,
+              decoration: const InputDecoration(
+                labelText: 'User name',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
               controller: _emailController,
               enabled: !_isLoading,
               keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
               decoration: const InputDecoration(
                 labelText: 'Email',
                 border: OutlineInputBorder(),
@@ -96,6 +113,7 @@ class _SupabaseSignUpPageState extends State<SupabaseSignUpPage> {
               controller: _passwordController,
               enabled: !_isLoading,
               obscureText: true,
+              textInputAction: TextInputAction.done,
               decoration: const InputDecoration(
                 labelText: 'Password',
                 border: OutlineInputBorder(),

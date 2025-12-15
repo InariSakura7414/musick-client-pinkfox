@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import '../services/socket_service.dart';
+import 'room_list_page.dart';
 
 class EchoPage extends StatefulWidget {
   final SocketService socketService;
   final String title;
+  final String? userId;
 
   const EchoPage({
     super.key,
     required this.socketService,
     this.title = 'Echo Test',
+    this.userId,
   });
 
   @override
@@ -95,6 +98,21 @@ class _EchoPageState extends State<EchoPage> {
         appBar: AppBar(
           title: Text(widget.title),
           actions: [
+            if (widget.userId != null && widget.userId!.isNotEmpty)
+              IconButton(
+                tooltip: 'Rooms',
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => RoomListPage(
+                        socketService: widget.socketService,
+                        userId: widget.userId!,
+                      ),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.meeting_room),
+              ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Center(

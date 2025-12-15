@@ -94,7 +94,8 @@ class _SupabaseAuthPageState extends State<SupabaseAuthPage> {
           MaterialPageRoute(
             builder: (_) => EchoPage(
               socketService: widget.socketService,
-              title: 'welcome! ${parsed.userId}',
+              title: 'welcome! ${parsed.userName}',
+              userId: parsed.userId,
             ),
           ),
         );
@@ -133,9 +134,10 @@ class _SupabaseAuthPageState extends State<SupabaseAuthPage> {
       final decoded = jsonDecode(raw);
       if (decoded is! Map) return null;
 
-      final success = decoded['Success'] ?? decoded['success'];
-      final message = decoded['Message'] ?? decoded['message'];
-      final userId = decoded['UserID'] ?? decoded['userId'] ?? decoded['userid'];
+      final success = decoded['success'];
+      final message = decoded['message'] ?? decoded['message_text'];
+      final userId = decoded['user_id'] ?? decoded['UserID'] ?? decoded['userId'] ?? decoded['userid'];
+      final userName = decoded['user_name'];
 
       if (success is! bool) return null;
 
@@ -143,6 +145,7 @@ class _SupabaseAuthPageState extends State<SupabaseAuthPage> {
         success: success,
         message: message is String ? message : '',
         userId: userId is String ? userId : '',
+        userName: userName is String ? userName : '',
       );
     } catch (_) {
       return null;
@@ -232,10 +235,12 @@ class _LoginResponse {
   final bool success;
   final String message;
   final String userId;
+  final String userName;
 
   const _LoginResponse({
     required this.success,
     required this.message,
     required this.userId,
+    required this.userName,
   });
 }
