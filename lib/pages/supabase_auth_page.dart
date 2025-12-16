@@ -96,6 +96,7 @@ class _SupabaseAuthPageState extends State<SupabaseAuthPage> {
               socketService: widget.socketService,
               title: 'welcome! ${parsed.userName}',
               userId: parsed.userId,
+              userName: parsed.userName,
             ),
           ),
         );

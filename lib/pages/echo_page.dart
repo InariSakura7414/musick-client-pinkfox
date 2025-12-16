@@ -6,12 +6,14 @@ class EchoPage extends StatefulWidget {
   final SocketService socketService;
   final String title;
   final String? userId;
+  final String? userName;
 
   const EchoPage({
     super.key,
     required this.socketService,
     this.title = 'Echo Test',
     this.userId,
+    this.userName,
   });
 
   @override
@@ -107,6 +109,7 @@ class _EchoPageState extends State<EchoPage> {
                       builder: (_) => RoomListPage(
                         socketService: widget.socketService,
                         userId: widget.userId!,
+                        userName: widget.userName,
                       ),
                     ),
                   );
